@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Habits</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#F1F3F6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1116" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<style>
+:root{--bg:#F1F3F6;--sf:#fff;--cell:#E8ECF1;--ink:#12161C;--mu:#667080;--ln:#DDE2E9;color-scheme:light dark}
+@media(prefers-color-scheme:dark){:root{--bg:#0E1116;--sf:#171B22;--cell:#252B34;--ink:#EEF1F5;--mu:#8D97A6;--ln:#272D37}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button{font:inherit;cursor:pointer}
+main{max-width:520px;margin:0 auto;padding:16px 16px 130px}
+.top{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+h1{font-size:30px;line-height:1.1;margin:0;font-weight:750;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+h2{font-size:20px;margin:0 0 4px}
+.sub,.st{color:var(--mu);font-size:14px}
+.sp{flex:1}
+.ib{width:44px;height:44px;border:0;background:none;color:var(--ink);border-radius:50%;display:grid;place-items:center;position:relative;flex:none}
+.ib:active{background:var(--cell)}
+.dot{position:absolute;top:10px;right:10px;width:8px;height:8px;border-radius:50%;background:#E5484D}
+.list{list-style:none;margin:0;padding:0;background:var(--sf);border-radius:20px;overflow:hidden}
+.row{position:relative;display:flex;align-items:center;gap:6px;padding:10px 12px 10px 16px;min-height:76px}
+.row+.row{border-top:1px solid var(--ln)}
+.info{flex:1;min-width:0;display:flex;align-items:center;gap:12px;color:inherit;background:none;border:0;text-align:left;padding:8px 0}
+.sw{width:12px;height:12px;border-radius:4px;background:var(--c);flex:none}
+.nm{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar{position:absolute;left:0;bottom:0;height:3px;background:var(--c);transition:width .25s}
+.chk{width:50px;height:50px;border-radius:50%;border:2px solid var(--c);background:none;display:grid;place-items:center;flex:none}
+.chk svg{opacity:0;color:#fff}
+.chk.on{background:var(--c)}.chk.on svg{opacity:1}
+.val{height:48px;min-width:48px;padding:0 8px;border:0;background:none;color:var(--ink);font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.pl{width:46px;height:46px;border:0;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;flex:none}
+.fab{position:fixed;right:20px;bottom:calc(76px + env(safe-area-inset-bottom));width:58px;height:58px;border-radius:50%;border:0;background:var(--ink);color:var(--bg);display:grid;place-items:center;box-shadow:0 6px 18px #0004}
+.empty{text-align:center;padding:72px 24px;color:var(--mu)}
+.mon{display:flex;align-items:center;justify-content:space-between;margin:4px 0 10px}
+.mon b{font-size:19px;background:none;border:0;color:var(--ink);padding:8px}
+.wd,.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.wd span{text-align:center;color:var(--mu);font-size:12px;padding-bottom:2px}
+.d{aspect-ratio:1;border:0;border-radius:12px;background-color:var(--cell);color:var(--ink);font-size:15px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;line-height:1.1;font-variant-numeric:tabular-nums}
+.d small{font-size:10px;font-weight:500;opacity:.85}
+.d.t{outline:2px solid var(--ink);outline-offset:1px}
+.d.f{opacity:.35;pointer-events:none}
+#sh{position:fixed;inset:0;z-index:10;display:none}#sh.open{display:block}
+.bk{position:absolute;inset:0;background:#0007}
+.pn{position:absolute;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;background:var(--sf);border-radius:24px 24px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto;animation:up .2s ease-out}
+@keyframes up{from{transform:translateY(24px);opacity:0}}
+label{display:block;font-size:13px;color:var(--mu);margin:14px 0 6px}
+input[type=text],input[type=date]{width:100%;height:48px;border:1px solid var(--ln);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;padding:0 14px}
+.seg{display:flex;background:var(--cell);border-radius:12px;padding:3px}
+.seg button{flex:1;height:42px;border:0;border-radius:10px;background:none;color:var(--ink)}
+.seg .on{background:var(--sf);font-weight:600;box-shadow:0 1px 3px #0003}
+.cols{display:flex;flex-wrap:wrap;gap:10px}
+.cs{width:40px;height:40px;border-radius:50%;border:0;background:var(--c);position:relative;padding:0}
+.cs.on{outline:3px solid var(--ink);outline-offset:2px}
+.cu{background:conic-gradient(#E5484D,#E5A800,#30A46C,#3E63DD,#D6409F,#E5484D)}
+.cu input{position:absolute;inset:0;width:100%;height:100%;opacity:0}
+.btn{display:block;width:100%;height:50px;border:0;border-radius:14px;background:var(--ink);color:var(--bg);font-weight:650;margin-top:14px}
+.btn.g{background:var(--cell);color:var(--ink)}.btn.r{background:none;color:#E5484D}
+.big{display:flex;gap:10px;align-items:center;margin-top:16px}
+.big input{text-align:center;font-size:28px;font-weight:700;height:64px}
+.big button{width:64px;height:64px;flex:none;border-radius:16px;border:0;background:var(--cell);color:var(--ink);font-size:28px}
+.chips{display:flex;gap:8px;margin-top:12px}
+.chips button{flex:1;height:44px;border:0;border-radius:12px;background:var(--cell);color:var(--ink)}
+#ts{position:fixed;left:50%;bottom:150px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20;max-width:90vw}
+#ts.on{opacity:1}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;background:var(--sf);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom)}
+.tabs button{flex:1;height:56px;border:0;background:none;color:var(--mu);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:12px;font-weight:600}
+.tabs .on{color:var(--ink)}
+.ysel{display:flex;align-items:center;gap:2px;margin-bottom:8px}
+.ysel select{flex:1;min-width:0;height:40px;border:1px solid var(--ln);border-left:6px solid var(--c);border-radius:12px;background:var(--sf);color:var(--ink);font:inherit;padding:0 12px}
+.ysel b{min-width:48px;text-align:center;font-variant-numeric:tabular-nums}
+.ytw{background:var(--sf);border-radius:12px;padding:2px;overflow:auto;max-height:calc(100dvh - 190px)}
+.yt{border-collapse:separate;border-spacing:2px;margin:0 auto}
+.yt th{position:sticky;background:var(--sf);color:var(--mu);font-size:10px;font-weight:600;line-height:1;padding:0;z-index:1}
+.yt thead th{top:0;height:16px;min-width:16px}
+.yt thead th:first-child,.yt tbody th{left:0;min-width:20px}
+.yt thead th:first-child{z-index:2}
+.yt td{padding:0;width:16px;height:16px}
+.yc{display:block;width:16px;height:16px;aspect-ratio:1;border:0;border-radius:4px;background-color:var(--cell);padding:0}
+.yc.t{outline:1.5px solid var(--ink);outline-offset:0}
+.yc.f{opacity:.35;pointer-events:none}
+.d.dn::after{content:'✓';font-size:10px;font-weight:700}
+.yc.dn{display:flex}.yc.dn::after{content:'';width:4px;height:4px;border-radius:50%;background:var(--ink);margin:auto}
+.gh{display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:14px;height:44px;padding:0 4px;border:0;background:none;color:var(--mu);font-weight:600}
+.gh+.list{margin-top:2px}
+.txt{height:40px;padding:0 12px;border:0;border-radius:12px;background:var(--cell);color:var(--ink);font-size:14px;font-weight:600;flex:none}
+.key{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12px;color:var(--mu);margin:2px 0 12px}
+.key span{display:flex;align-items:center;gap:5px}.key i{width:10px;height:10px;border-radius:3px;background:var(--c)}
+.moods{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.mo{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:var(--ink);font-size:12px;padding:6px 0}
+.mo i{width:46px;height:46px;border-radius:50%;background:var(--c)}
+.mo.on i{outline:3px solid var(--ink);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<div id="sh"></div>
+<div id="ts" role="status"></div>
+<script>
+const $=s=>document.querySelector(s),app=$('#app'),sh=$('#sh');
+const KEY='habit-tracker-v1',COLORS=['#E5484D','#F76B15','#E5A800','#30A46C','#0FA3A3','#3E63DD','#8E4EC6','#D6409F'];
+const ic=p=>`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const I={back:ic('<path d="M15 18l-6-6 6-6"/>'),next:ic('<path d="M9 18l6-6-6-6"/>'),dots:ic('<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>'),plus:ic('<path d="M12 5v14M5 12h14"/>'),check:ic('<path d="M5 12.5l4.5 4.5L19 7.5"/>'),edit:ic('<path d="M4 20h4L19 9l-4-4L4 16v4z"/>'),list:ic('<path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>'),grid:ic('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>'),smile:ic('<circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9.5h.01M15 9.5h.01"/>')};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const p2=n=>String(n).padStart(2,'0'),dk=d=>d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate()),todayKey=()=>dk(new Date());
+const fmt=n=>String(Math.round(n*100)/100),num=s=>{const x=parseFloat(String(s).replace(',','.'));return x>0?x:null};
+function norm(s){return{habits:(s.habits||[]).filter(h=>h&&h.id&&h.name&&/^#[0-9a-f]{6}$/i.test(h.color)).map(h=>({type:'yn',target:1,step:1,unit:'',...h})),log:s.log&&typeof s.log==='object'?s.log:{},weekStart:[0,1,6].includes(s.weekStart)?s.weekStart:1,lastBackup:s.lastBackup||null,mood:s.mood&&typeof s.mood==='object'?s.mood:{},done:s.done&&typeof s.done==='object'?s.done:{}}}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.habits))return norm(s)}catch(e){}return norm({})}
+let S=load(),view='home',cur=null,ym=null,tk=todayKey(),yh=null,yy=new Date().getFullYear();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Couldn’t save on this device')}}
+function toast(t){const e=$('#ts');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2400)}
+const H=id=>S.habits.find(h=>h.id===id),get=(h,k)=>(S.log[h.id]||{})[k]||0;
+function set(h,k,v){v=Math.max(0,Math.round(v*100)/100);const l=S.log[h.id]=S.log[h.id]||{};if(v>0)l[k]=v;else delete l[k];save()}
+const prog=(h,k)=>{const v=get(h,k);return h.type==='yn'?(v>=1?1:0):Math.min(v/h.target,1)};
+const buzz=()=>navigator.vibrate&&navigator.vibrate(10);
+const MOODS=[{id:'happy',n:'Happy',c:'#F2B01E'},{id:'calm',n:'Calm',c:'#0FA3A3'},{id:'energetic',n:'Energetic',c:'#30A46C'},{id:'neutral',n:'Neutral',c:'#98A2B3'},{id:'tired',n:'Tired',c:'#8E4EC6'},{id:'sad',n:'Sad',c:'#3E63DD'},{id:'anxious',n:'Anxious',c:'#F76B15'},{id:'angry',n:'Angry',c:'#E5484D'}],MOOD=Object.fromEntries(MOODS.map(m=>[m.id,m]));
+const mst=c=>{const r=rgb(c);return`background-image:linear-gradient(${c},${c});color:${(.299*r[0]+.587*r[1]+.114*r[2])/255>.6?'#12161C':'#fff'}`};
+const key=()=>`<div class="key">${MOODS.map(m=>`<span style="--c:${m.c}"><i></i>${m.n}</span>`).join('')}</div>`;
+const fd=k=>new Date(k+'T00:00:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
+const dn=(h,k)=>!!(S.done[h.id]||{})[k],isD=(h,k)=>dn(h,k)||prog(h,k)>=1;
+function setDn(h,k,v){const l=S.done[h.id]=S.done[h.id]||{};if(v)l[k]=1;else delete l[k];save()}
+const needBackup=()=>S.habits.length&&(!S.lastBackup||Date.now()-S.lastBackup>12096e5);
+const rgb=c=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16));
+function cellStyle(h,k){const p=prog(h,k);if(!p)return'';const a=Math.max(p,.14),c=rgb(h.color),bg=rgb(getComputedStyle(document.documentElement).getPropertyValue('--cell').trim()),m=c.map((x,i)=>x*a+bg[i]*(1-a)),l=(.299*m[0]+.587*m[1]+.114*m[2])/255;return`background-image:linear-gradient(rgba(${c},${a}),rgba(${c},${a}));color:${l>.6?'#12161C':'#fff'}`}
+const nav=(hash,rep)=>{history[rep?'replaceState':'pushState']({in:1},'',hash);route()};
+function route(){const m=location.hash.match(/^#\/h\/(\w+)$/);if(m&&H(m[1])){view='cal';cur=m[1]}else if(location.hash==='#/year'){view='year';cur=null}else if(location.hash==='#/mood'){view='mood';cur=null}else{view='home';cur=null}render()}
+function render(){view==='cal'?cal():view==='year'?year():view==='mood'?mood():home()}
+
+function row(x){const p=prog(x,tk),v=get(x,tk),yn=x.type==='yn',u=x.unit?' '+esc(x.unit):'',fl=dn(x,tk)&&p<1;
+return`<li class="row" style="--c:${x.color}"><button class="info" data-a="go" data-id="${x.id}"><span class="sw"></span><span style="min-width:0"><div class="nm">${esc(x.name)}</div><div class="st">${yn?(v?'Done':fl?'Marked done':'Not yet'):fmt(v)+' / '+fmt(x.target)+u+(fl?' · marked done':'')}</div></span></button>`+
+(fl?`<button class="txt" data-a="ud" data-id="${x.id}">Undo</button>`:yn?`<button class="chk${v?' on':''}" data-a="tg" data-id="${x.id}" aria-label="Mark ${esc(x.name)} done" aria-pressed="${!!v}">${I.check}</button>`
+:`<button class="val" data-a="vl" data-id="${x.id}" aria-label="Enter today’s value">${fmt(v)}</button><button class="pl" data-a="pl" data-id="${x.id}" aria-label="Add ${fmt(x.step)}">${I.plus}</button>`)+`<i class="bar" style="width:${p*100}%"></i></li>`}
+const OP={xd:0,xp:0,xa:0};
+const mini=(x,sub,k,l)=>`<li class="row" style="--c:${x.color}"><button class="info" data-a="go" data-id="${x.id}"><span class="sw"></span><span style="min-width:0"><div class="nm">${esc(x.name)}</div><div class="st">${sub}</div></span></button><button class="txt" data-a="${k}" data-id="${x.id}">${l}</button></li>`;
+const grp=(k,l,list,fn)=>list.length?`<button class="gh" data-a="${k}">${l} · ${list.length}<span>${OP[k]?'−':'+'}</span></button>`+(OP[k]?`<ul class="list">${list.map(fn).join('')}</ul>`:''):'';
+function home(){
+const A=S.habits.filter(h=>!h.archived),sn=h=>h.snoozeUntil&&h.snoozeUntil>tk,live=A.filter(h=>!sn(h)),act=live.filter(h=>!isD(h,tk));
+app.innerHTML=`<header class="top"><div><h1>Today</h1><div class="sub">${new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'})}</div></div><span class="sp"></span><button class="ib" data-a="mn" aria-label="Backup and settings">${I.dots}${needBackup()?'<i class="dot"></i>':''}</button></header>`+
+(!S.habits.length?`<div class="empty"><h2 style="color:var(--ink)">No habits yet</h2><p>Add one to start tracking today.</p></div>`:act.length?`<ul class="list">${act.map(row).join('')}</ul>`:`<div class="empty" style="padding:40px 24px"><h2 style="color:var(--ink)">All clear for today</h2></div>`)+
+grp('xd','Done today',A.filter(h=>isD(h,tk)),row)+grp('xp','Postponed',A.filter(h=>sn(h)&&!isD(h,tk)),x=>mini(x,'Back '+fd(x.snoozeUntil),'bb','Bring back'))+grp('xa','Archived',S.habits.filter(h=>h.archived),x=>mini(x,'Archived','ua','Restore'))+
+`<button class="fab" data-a="ad" aria-label="Add habit">${I.plus}</button>`+tabs(0)}
+function cal(){const h=H(cur);if(!h)return nav('#/',1);
+if(!ym){const n=new Date();ym=[n.getFullYear(),n.getMonth()]}
+const[y,m]=ym,n=new Date(y,m+1,0).getDate(),off=(new Date(y,m,1).getDay()-S.weekStart+7)%7;
+const wd=[...Array(7)].map((_,i)=>`<span>${new Date(2024,0,7+(i+S.weekStart)%7).toLocaleDateString(undefined,{weekday:'narrow'})}</span>`).join('');
+let g='<div></div>'.repeat(off);
+for(let d=1;d<=n;d++){const k=y+'-'+p2(m+1)+'-'+p2(d),v=get(h,k);g+=`<button class="d${k===tk?' t':''}${k>tk?' f':''}${dn(h,k)?' dn':''}" data-a="dy" data-id="${h.id}" data-k="${k}" style="${cellStyle(h,k)}" aria-label="${d} ${new Date(y,m,1).toLocaleDateString(undefined,{month:'long'})}">${d}${h.type==='num'&&v?`<small>${fmt(v)}</small>`:''}</button>`}
+app.innerHTML=`<header class="top" style="--c:${h.color}"><button class="ib" data-a="bk" aria-label="Back">${I.back}</button><div style="min-width:0"><h1 style="font-size:24px"><span class="sw"></span>${esc(h.name)}</h1><div class="sub">${h.type==='yn'?'Yes / No':'Target '+fmt(h.target)+(h.unit?' '+esc(h.unit):'')+' a day'}</div></div><span class="sp"></span><button class="ib" data-a="ed" data-id="${h.id}" aria-label="Edit habit">${I.edit}</button></header>
+<div class="mon"><button class="ib" data-a="pm" aria-label="Previous month">${I.back}</button><b data-a="tm">${new Date(y,m,1).toLocaleDateString(undefined,{month:'long',year:'numeric'})}</b><button class="ib" data-a="nm" aria-label="Next month">${I.next}</button></div><div class="wd">${wd}</div><div class="grid">${g}</div>${tabs(0)}`;
+const gr=app.querySelector('.grid');let x0=0;gr.ontouchstart=e=>x0=e.touches[0].clientX;gr.ontouchend=e=>{const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>60)shift(dx<0?1:-1)}}
+const tabs=a=>`<nav class="tabs">${[[0,'t1','list','Habits'],[2,'t3','smile','Mood'],[1,'t2','grid','Year']].map(([i,k,n,l])=>`<button class="${a===i?'on':''}" data-a="${k}">${I[n]}${l}</button>`).join('')}</nav>`;
+function year(){
+const o=app.querySelector('.ytw'),sx=o?o.scrollLeft:0,sy=o?o.scrollTop:0;
+if(yh!=='__mood'&&!H(yh))yh=S.habits[0]?S.habits[0].id:'__mood';
+const h=yh==='__mood'?null:H(yh),ml=m=>new Date(2024,m,1).toLocaleDateString(undefined,{month:'long'});
+let t='<thead><tr><th></th>'+[...Array(12)].map((_,m)=>`<th title="${ml(m)}">${new Date(2024,m,1).toLocaleDateString(undefined,{month:'narrow'})}</th>`).join('')+'</tr></thead><tbody>';
+for(let d=1;d<=31;d++){t+=`<tr><th>${d}</th>`;
+for(let m=0;m<12;m++){if(d>new Date(yy,m+1,0).getDate()){t+='<td></td>';continue}
+const k=yy+'-'+p2(m+1)+'-'+p2(d),c='yc'+(k===tk?' t':'')+(k>tk?' f':'')+(h&&dn(h,k)?' dn':''),al=`${d} ${ml(m)} ${yy}`,md=MOOD[S.mood[k]];
+t+=h?`<td><button class="${c}" data-a="dy" data-id="${h.id}" data-k="${k}" style="${cellStyle(h,k)}" aria-label="${al}"></button></td>`:`<td><button class="${c}" data-a="my" data-k="${k}" style="${md?mst(md.c):''}" aria-label="${al}"></button></td>`}
+t+='</tr>'}
+const opts=S.habits.map(x=>`<option value="${x.id}"${x.id===yh?' selected':''}>${esc(x.name)}${x.archived?' (archived)':''}</option>`).join('')+`<option value="__mood"${h?'':' selected'}>Mood</option>`;
+app.innerHTML=`<div class="ysel" style="--c:${h?h.color:'#98A2B3'}"><select id="ys" aria-label="Habit or mood">${opts}</select><button class="ib" data-a="py" aria-label="Previous year">${I.back}</button><b>${yy}</b><button class="ib" data-a="ny" aria-label="Next year">${I.next}</button></div>${h?'':key()}<div class="ytw"><table class="yt">${t}</tbody></table></div>`+tabs(1);
+const n=app.querySelector('.ytw');n.scrollLeft=sx;n.scrollTop=sy}
+app.onchange=e=>{if(e.target.id==='ys'){yh=e.target.value;render()}};
+function mood(){
+if(!ym){const n=new Date();ym=[n.getFullYear(),n.getMonth()]}
+const[y,m]=ym,n=new Date(y,m+1,0).getDate(),off=(new Date(y,m,1).getDay()-S.weekStart+7)%7,mo=new Date(y,m,1);
+const wd=[...Array(7)].map((_,i)=>`<span>${new Date(2024,0,7+(i+S.weekStart)%7).toLocaleDateString(undefined,{weekday:'narrow'})}</span>`).join('');
+let g='<div></div>'.repeat(off);
+for(let d=1;d<=n;d++){const k=y+'-'+p2(m+1)+'-'+p2(d),md=MOOD[S.mood[k]];g+=`<button class="d${k===tk?' t':''}${k>tk?' f':''}" data-a="my" data-k="${k}" style="${md?mst(md.c):''}" aria-label="${d} ${mo.toLocaleDateString(undefined,{month:'long'})}${md?', '+md.n:''}">${d}</button>`}
+app.innerHTML=`<header class="top"><h1>Mood</h1></header><div class="mon"><button class="ib" data-a="pm" aria-label="Previous month">${I.back}</button><b data-a="tm">${mo.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</b><button class="ib" data-a="nm" aria-label="Next month">${I.next}</button></div>${key()}<div class="wd">${wd}</div><div class="grid">${g}</div>${tabs(2)}`;
+const gr=app.querySelector('.grid');let x0=0;gr.ontouchstart=e=>x0=e.touches[0].clientX;gr.ontouchend=e=>{const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>60)shift(dx<0?1:-1)}}
+function moodSheet(k){
+sheet(`<h2>Mood</h2><div class="sub">${new Date(k+'T00:00:00').toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'})}</div><div class="moods">${MOODS.map(m=>`<button class="mo${S.mood[k]===m.id?' on':''}" data-m="${m.id}" style="--c:${m.c}"><i></i>${m.n}</button>`).join('')}</div>${S.mood[k]?'<button class="btn g" data-m="">Clear</button>':''}`,p=>{
+p.addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;if(b.dataset.m)S.mood[k]=b.dataset.m;else delete S.mood[k];save();close()})})}
+function shift(n){const[y,m]=ym,t=new Date(y,m+n,1);if(t>new Date())return;ym=[t.getFullYear(),t.getMonth()];render()}
+
+app.onclick=e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,h=H(b.dataset.id);
+if(a==='go'){ym=null;nav('#/h/'+h.id)}
+else if(a==='tg'){set(h,tk,get(h,tk)?0:1);buzz();render()}
+else if(a==='pl'){set(h,tk,get(h,tk)+h.step);buzz();render()}
+else if(a==='vl')daySheet(h,tk);
+else if(a==='bk')history.state&&history.state.in?history.back():nav('#/',1);
+else if(a==='ed')habitSheet(h);else if(a==='ad')habitSheet();else if(a==='mn')menuSheet();
+else if(a==='pm')shift(-1);else if(a==='nm')shift(1);else if(a==='tm'){ym=null;render()}
+else if(a==='t1'){ym=null;nav('#/',1)}else if(a==='t2'){ym=null;nav('#/year',1)}else if(a==='t3'){ym=null;nav('#/mood',1)}
+else if(a==='bb'){delete h.snoozeUntil;save();render()}else if(a==='ua'){delete h.archived;save();render()}else if(a==='xd'||a==='xp'||a==='xa'){OP[a]^=1;render()}else if(a==='my')moodSheet(b.dataset.k);else if(a==='ud'){setDn(h,tk,0);render()}
+else if(a==='py'){yy--;render()}else if(a==='ny'){if(yy<new Date().getFullYear()){yy++;render()}}
+else if(a==='dy'){const k=b.dataset.k;if(h.type==='yn'){set(h,k,get(h,k)?0:1);buzz();render()}else daySheet(h,k)}};
+
+function sheet(html,fn){sh.innerHTML=`<div class="bk" data-c></div><div class="pn" role="dialog">${html}</div>`;sh.classList.add('open');fn(sh.querySelector('.pn'))}
+function close(){sh.classList.remove('open');sh.innerHTML='';render()}
+sh.onclick=e=>{if(e.target.closest('[data-c]'))close()};
+
+function daySheet(h,k){const u=h.unit?' '+esc(h.unit):'';
+sheet(`<h2>${esc(h.name)}</h2><div class="sub">${new Date(k+'T00:00:00').toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'})} · target ${fmt(h.target)}${u}</div>
+<div class="big"><button data-s="-1" aria-label="Subtract ${fmt(h.step)}">−</button><input type="text" id="v" inputmode="decimal" value="${fmt(get(h,k))}" aria-label="Value"><button data-s="1" aria-label="Add ${fmt(h.step)}">+</button></div>
+<div class="chips"><button data-q="t">Reach target</button><button data-q="z">Clear</button></div><button class="btn g" data-q="d">${dn(h,k)?'Undo done':'Mark as done'}</button><button class="btn" data-c>Close</button>`,p=>{
+const v=p.querySelector('#v');v.onfocus=()=>v.select();
+v.oninput=()=>{const n=parseFloat(v.value.replace(',','.'));if(!isNaN(n))set(h,k,n)};
+p.addEventListener('click',e=>{const b=e.target.closest('[data-s],[data-q]');if(!b)return;
+if(b.dataset.s)set(h,k,get(h,k)+h.step*+b.dataset.s);else if(b.dataset.q==='d'){setDn(h,k,!dn(h,k));b.textContent=dn(h,k)?'Undo done':'Mark as done'}else set(h,k,b.dataset.q==='t'?h.target:0);v.value=fmt(get(h,k))})})}
+
+function habitSheet(h){const e=h?{...h}:{name:'',type:'yn',color:COLORS[S.habits.length%8],target:1,unit:'',step:1};
+sheet(`<h2>${h?'Edit habit':'New habit'}</h2><label>Name</label><input type="text" id="n" maxlength="40" value="${esc(e.name)}" placeholder="Read, drink water, walk…">
+<label>Type</label><div class="seg"><button data-t="yn">Yes / No</button><button data-t="num">Number</button></div>
+<div id="nf"><label>Daily target</label><input type="text" id="tg" inputmode="decimal" value="${fmt(e.target)}"><label>Unit (optional)</label><input type="text" id="un" maxlength="12" value="${esc(e.unit)}" placeholder="glasses, pages, minutes"><label>One tap on + adds</label><input type="text" id="sp" inputmode="decimal" value="${fmt(e.step)}"></div>
+<label>Colour</label><div class="cols">${COLORS.map(c=>`<button class="cs" data-k="${c}" style="--c:${c}" aria-label="Colour ${c}"></button>`).join('')}<label class="cs cu" style="margin:0"><input type="color" id="cc" value="${e.color}" aria-label="Custom colour"></label></div>
+<button class="btn" data-a="sv">Save</button>${h?`<label>Postpone until</label><div class="chips"><button data-p="1">Tomorrow</button><button data-p="7">Next week</button></div><input type="date" id="pd" min="${dk(new Date(Date.now()+864e5))}" style="margin-top:8px" aria-label="Pick a date">${h.snoozeUntil&&h.snoozeUntil>tk?'<button class="btn g" data-a="bb">Bring back now</button>':''}${h.archived?'':`<button class="btn g" data-a="${dn(h,tk)?'ud2':'md'}">${dn(h,tk)?'Undo done today':'Mark done today'}</button>`}<button class="btn g" data-a="${h.archived?'ua':'ar'}">${h.archived?'Restore from archive':'Archive habit'}</button><button class="btn r" data-a="dl">Delete habit</button>`:''}<button class="btn g" data-c>Cancel</button>`,p=>{
+const paint=()=>{p.querySelectorAll('[data-t]').forEach(b=>b.classList.toggle('on',b.dataset.t===e.type));p.querySelector('#nf').style.display=e.type==='num'?'':'none';
+p.querySelectorAll('[data-k]').forEach(b=>b.classList.toggle('on',b.dataset.k===e.color));p.querySelector('.cu').classList.toggle('on',!COLORS.includes(e.color))};paint();
+p.querySelector('#cc').oninput=ev=>{e.color=ev.target.value;paint()};
+const fin=m=>{save();sh.classList.remove('open');sh.innerHTML='';nav('#/',1);toast(m)},pp=n=>{const d=new Date();d.setDate(d.getDate()+n);h.snoozeUntil=dk(d);fin('Postponed until '+fd(h.snoozeUntil))},pd=p.querySelector('#pd');
+if(pd)pd.onchange=ev=>{if(ev.target.value>tk){h.snoozeUntil=ev.target.value;fin('Postponed until '+fd(h.snoozeUntil))}};
+p.addEventListener('click',ev=>{const t=ev.target.closest('[data-t],[data-k],[data-a],[data-p]');if(!t)return;
+if(t.dataset.t){e.type=t.dataset.t;paint()}else if(t.dataset.k){e.color=t.dataset.k;paint()}
+else if(t.dataset.a==='sv'){const nm=p.querySelector('#n').value.trim();if(!nm){p.querySelector('#n').focus();return}
+e.name=nm;e.unit=p.querySelector('#un').value.trim();e.target=e.type==='yn'?1:(num(p.querySelector('#tg').value)||1);e.step=e.type==='yn'?1:(num(p.querySelector('#sp').value)||1);
+if(h)Object.assign(h,e);else{e.id=Date.now().toString(36)+Math.random().toString(36).slice(2,5);S.habits.push(e)}save();close()}
+else if(t.dataset.p)pp(+t.dataset.p);
+else if(t.dataset.a==='bb'){delete h.snoozeUntil;fin('Back on Today')}
+else if(t.dataset.a==='md'){setDn(h,tk,1);fin('Marked done — progress unchanged')}
+else if(t.dataset.a==='ud2'){setDn(h,tk,0);fin('Done mark removed')}
+else if(t.dataset.a==='ua'){delete h.archived;fin('Restored')}
+else if(t.dataset.a==='ar'){h.archived=true;fin('Archived — find it at the bottom of Today')}
+else if(t.dataset.a==='dl'&&confirm(`Delete “${h.name}” and all its history?`)){S.habits=S.habits.filter(x=>x!==h);delete S.log[h.id];delete S.done[h.id];save();sh.classList.remove('open');sh.innerHTML='';nav('#/',1)}})})}
+
+const backupJSON=()=>JSON.stringify({app:'habit-tracker',version:1,exported:new Date().toISOString(),...S},null,1);
+const bname=()=>'habit-tracker-backup-'+todayKey()+'.json';
+function stamp(){S.lastBackup=Date.now();save()}
+function menuSheet(){const ls=S.lastBackup?new Date(S.lastBackup).toLocaleDateString(undefined,{day:'numeric',month:'long',year:'numeric'}):'never';
+sheet(`<h2>Backup</h2><div class="st">Your data stays on this device. Clearing the browser’s site data would erase it, so download a backup now and then. Last backup: ${ls}.</div>
+<button class="btn" data-a="ex">Download backup</button>${navigator.canShare?'<button class="btn g" data-a="sb">Share backup</button>':''}<button class="btn g" data-a="im">Restore from backup</button><input type="file" id="fi" accept=".json,application/json" hidden>
+<label>Week starts on</label><div class="seg">${[[1,'Monday'],[0,'Sunday'],[6,'Saturday']].map(([v,l])=>`<button data-w="${v}" class="${S.weekStart===v?'on':''}">${l}</button>`).join('')}</div><button class="btn g" data-c>Close</button>`,p=>{
+const fi=p.querySelector('#fi');
+p.addEventListener('click',e=>{const b=e.target.closest('[data-a],[data-w]');if(!b)return;
+if(b.dataset.w){S.weekStart=+b.dataset.w;save();p.querySelectorAll('[data-w]').forEach(x=>x.classList.toggle('on',x===b))}
+else if(b.dataset.a==='ex'){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([backupJSON()],{type:'application/json'}));a.download=bname();document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);stamp();toast('Backup downloaded')}
+else if(b.dataset.a==='sb'){const f=new File([backupJSON()],bname(),{type:'application/json'});if(navigator.canShare({files:[f]}))navigator.share({files:[f]}).then(()=>{stamp();toast('Backup shared')}).catch(()=>{});else toast('Sharing isn’t available here — use Download')}
+else if(b.dataset.a==='im')fi.click()});
+fi.onchange=async()=>{const f=fi.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!d||!Array.isArray(d.habits)||!d.log||typeof d.log!=='object')throw 0;
+const n=norm(d);if(!confirm(`Replace all current data with this backup (${n.habits.length} habits)?`))return;S=n;save();history.replaceState({in:1},'','#/');close();route();toast('Backup restored')}catch(x){toast('That file isn’t a valid backup')}}})}
+
+const tick=()=>{const t=todayKey();if(t!==tk){tk=t;render()}};
+setInterval(tick,30000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});
+window.addEventListener('popstate',route);route();
+if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
+navigator.storage&&navigator.storage.persist&&navigator.storage.persist();
+</script>
+</body>
+</html>
